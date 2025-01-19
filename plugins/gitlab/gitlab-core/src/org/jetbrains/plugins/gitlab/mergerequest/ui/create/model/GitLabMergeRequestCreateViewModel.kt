@@ -60,6 +60,8 @@ internal interface GitLabMergeRequestCreateViewModel {
   val adjustedReviewers: StateFlow<List<GitLabUserDTO>>
 
   val openReviewTabAction: suspend (mrIid: String) -> Unit
+  
+  val deleteSourceBranch: Flow<Boolean>
 
   fun updateTitle(text: String)
   fun updateBranchState(state: BranchState?)
@@ -165,6 +167,7 @@ internal class GitLabMergeRequestCreateViewModelImpl(
 
   private val _adjustedReviewers: MutableStateFlow<List<GitLabUserDTO>> = MutableStateFlow(listOf())
   override val adjustedReviewers: StateFlow<List<GitLabUserDTO>> = _adjustedReviewers.asStateFlow()
+  override val deleteSourceBranch: Flow<Boolean> = MutableStateFlow(false)
 
   private val _title: MutableStateFlow<String> = MutableStateFlow("")
   override val title: StateFlow<String> = _title.asStateFlow()

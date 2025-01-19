@@ -3,11 +3,14 @@ package org.jetbrains.plugins.gitlab.mergerequest.ui.create
 
 import com.intellij.collaboration.ui.CollaborationToolsUIUtil.defaultButton
 import com.intellij.collaboration.ui.HorizontalListPanel
+import com.intellij.collaboration.ui.VerticalListPanel
 import com.intellij.openapi.project.Project
+import com.intellij.ui.components.JBCheckBox
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.gitlab.mergerequest.ui.create.action.GitLabMergeRequestCloseCreateTabAction
 import org.jetbrains.plugins.gitlab.mergerequest.ui.create.action.GitLabMergeRequestCreateAction
 import org.jetbrains.plugins.gitlab.mergerequest.ui.create.model.GitLabMergeRequestCreateViewModel
+import org.jetbrains.plugins.gitlab.util.GitLabBundle
 import javax.swing.Action
 import javax.swing.JButton
 import javax.swing.JComponent
@@ -19,16 +22,26 @@ internal object GitLabMergeRequestCreateActionsComponentFactory {
     val createAction = GitLabMergeRequestCreateAction(cs, createVm)
     val closeAction = GitLabMergeRequestCloseCreateTabAction(project)
 
-    return HorizontalListPanel(BUTTONS_GAP).apply {
-      add(createAction.toButton().defaultButton())
-      add(closeAction.toButton())
+    return VerticalListPanel().apply {
+      add(creatingDeleteSourceBranchCheckbox(cs, createVm))
+      add(HorizontalListPanel(BUTTONS_GAP).apply {
+        add(createAction.toButton().defaultButton())
+        add(closeAction.toButton())
+      })
     }
+
   }
 
   private fun Action.toButton(): JButton {
     val action = this
     return JButton(action).apply {
       isOpaque = false
+    }
+  }
+
+  private fun creatingDeleteSourceBranchCheckbox(cd: CoroutineScope, createVm: GitLabMergeRequestCreateViewModel): JComponent {
+    return JBCheckBox().apply {
+      text = GitLabBundle.message("merge.request.create.delete.source.branch.text")
     }
   }
 }
